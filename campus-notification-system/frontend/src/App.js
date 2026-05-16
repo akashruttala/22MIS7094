@@ -1,43 +1,44 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
-import {
-  AppBar, Toolbar, Typography, Button, Container, CssBaseline,
-  ThemeProvider, createTheme, Box, Fade
-} from '@mui/material';
+import { AppBar, Toolbar, Typography, Button, Container, CssBaseline, ThemeProvider, createTheme, Box, Fade } from '@mui/material';
 import { Notifications, StarRate } from '@mui/icons-material';
 import AllNotifications from './pages/AllNotifications';
 import PriorityInbox from './pages/PriorityInbox';
 
-// Dark theme with purple accent
 const theme = createTheme({
   palette: {
-    mode: 'dark',
-    primary: { main: '#7c4dff' },
-    secondary: { main: '#ff9800' },
-    background: { default: '#0d1117', paper: '#161b22' },
+    mode: 'light',
+    primary: { main: '#1A73E8' },
+    secondary: { main: '#EA4335' },
+    background: { default: '#F8F9FA', paper: '#FFFFFF' },
+    text: { primary: '#202124', secondary: '#5F6368' }
   },
   typography: {
     fontFamily: "'Inter', 'Segoe UI', sans-serif",
-    h5: { fontWeight: 700 },
+    h5: { fontWeight: 800, color: '#202124' },
+    h6: { fontWeight: 700, color: '#202124' },
   },
-  shape: { borderRadius: 10 },
+  shape: { borderRadius: 12 },
   components: {
     MuiCard: {
       styleOverrides: {
         root: {
           backgroundImage: 'none',
-          border: '1px solid rgba(255,255,255,0.06)',
-          transition: 'all 0.2s ease',
+          boxShadow: '0 2px 10px rgba(0,0,0,0.04)',
+          border: '1px solid rgba(0,0,0,0.04)',
+          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
         },
       },
     },
     MuiButton: {
-      styleOverrides: { root: { textTransform: 'none', fontWeight: 600 } },
+      styleOverrides: { root: { textTransform: 'none', fontWeight: 600, borderRadius: 8 } },
+    },
+    MuiChip: {
+      styleOverrides: { root: { borderRadius: 6 } },
     },
   },
 });
 
-// Nav link that highlights the active page
 function NavLink({ to, icon, label }) {
   const location = useLocation();
   const isActive = location.pathname === to;
@@ -48,10 +49,16 @@ function NavLink({ to, icon, label }) {
       startIcon={icon}
       size="small"
       sx={{
-        color: isActive ? '#b388ff' : 'rgba(255,255,255,0.6)',
-        borderBottom: isActive ? '2px solid #7c4dff' : '2px solid transparent',
-        borderRadius: 0, px: 2, py: 1.2,
-        '&:hover': { color: '#fff', backgroundColor: 'rgba(124,77,255,0.08)' },
+        color: isActive ? '#1A73E8' : '#5F6368',
+        borderBottom: isActive ? '3px solid #1A73E8' : '3px solid transparent',
+        borderRadius: 0, px: 2.5, py: 1.5,
+        fontSize: '0.95rem',
+        fontWeight: isActive ? 800 : 600,
+        transition: 'all 0.2s ease',
+        '&:hover': {
+          color: '#1A73E8',
+          backgroundColor: 'rgba(26,115,232,0.05)',
+        },
       }}
     >
       {label}
@@ -64,37 +71,30 @@ function App() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Router>
-        {/* Subtle background gradient */}
-        <Box sx={{
-          position: 'fixed', inset: 0, zIndex: 0, pointerEvents: 'none',
-          background: 'radial-gradient(ellipse at 15% 0%, rgba(124,77,255,0.08) 0%, transparent 50%)',
-        }} />
-
         <AppBar position="sticky" elevation={0} sx={{
-          background: 'rgba(13,17,23,0.9)', backdropFilter: 'blur(12px)',
-          borderBottom: '1px solid rgba(255,255,255,0.06)',
+          background: '#FFFFFF',
+          borderBottom: '1px solid rgba(0,0,0,0.08)',
+          color: '#202124'
         }}>
-          <Toolbar sx={{ justifyContent: 'space-between' }}>
-            {/* Logo */}
+          <Toolbar sx={{ justifyContent: 'space-between', minHeight: '68px !important' }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
               <Box sx={{
-                width: 32, height: 32, borderRadius: '8px',
-                background: 'linear-gradient(135deg, #7c4dff, #ff9800)',
+                width: 38, height: 38, borderRadius: '10px',
+                background: '#1A73E8',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
+                boxShadow: '0 2px 8px rgba(26,115,232,0.3)',
               }}>
-                <Notifications sx={{ fontSize: 18, color: '#fff' }} />
+                <Notifications sx={{ fontSize: 22, color: '#fff' }} />
               </Box>
               <Typography variant="h6" sx={{
-                fontWeight: 700, fontSize: { xs: '0.95rem', sm: '1.15rem' },
-                background: 'linear-gradient(90deg, #b388ff, #ffb74d)',
-                backgroundClip: 'text', WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
+                fontWeight: 800, fontSize: { xs: '1.2rem', sm: '1.35rem' },
+                color: '#1A73E8',
+                letterSpacing: '-0.02em',
               }}>
                 CampusNotify
               </Typography>
             </Box>
 
-            {/* Navigation */}
             <Box sx={{ display: 'flex' }}>
               <NavLink to="/" icon={<Notifications fontSize="small" />} label="All" />
               <NavLink to="/priority" icon={<StarRate fontSize="small" />} label="Priority" />
@@ -102,8 +102,8 @@ function App() {
           </Toolbar>
         </AppBar>
 
-        <Container maxWidth="md" sx={{ mt: 4, mb: 6, position: 'relative', zIndex: 1 }}>
-          <Fade in timeout={400}>
+        <Container maxWidth="md" sx={{ mt: 5, mb: 8 }}>
+          <Fade in timeout={500}>
             <Box>
               <Routes>
                 <Route path="/" element={<AllNotifications />} />

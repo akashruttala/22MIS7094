@@ -2,15 +2,14 @@ import React from 'react';
 import { Card, CardContent, Typography, Chip, Box, IconButton, Tooltip } from '@mui/material';
 import { CheckCircleOutlined, MarkEmailRead, FiberNew, WorkOutlined, School, EmojiEvents } from '@mui/icons-material';
 
-// Color + icon config for each notification type
 const TYPE_STYLES = {
-  Placement: { color: '#4caf50', bg: 'rgba(76,175,80,0.08)', icon: <WorkOutlined fontSize="small" /> },
-  Result:    { color: '#2196f3', bg: 'rgba(33,150,243,0.08)', icon: <School fontSize="small" /> },
-  Event:     { color: '#ff9800', bg: 'rgba(255,152,0,0.08)',  icon: <EmojiEvents fontSize="small" /> },
+  Placement: { color: '#34A853', bg: 'rgba(52,168,83,0.1)', icon: <WorkOutlined fontSize="small" /> },
+  Result:    { color: '#1A73E8', bg: 'rgba(26,115,232,0.1)', icon: <School fontSize="small" /> },
+  Event:     { color: '#F9AB00', bg: 'rgba(249,171,0,0.15)',  icon: <EmojiEvents fontSize="small" /> },
 };
 
 const NotificationCard = ({ notification, isRead, onMarkRead, showRank, rank }) => {
-  const style = TYPE_STYLES[notification.Type] || TYPE_STYLES.Event;
+  const style = TYPE_STYLES[notification.type] || TYPE_STYLES.Event;
 
   const formatTime = (ts) => {
     const date = new Date(ts);
@@ -28,84 +27,105 @@ const NotificationCard = ({ notification, isRead, onMarkRead, showRank, rank }) 
 
   return (
     <Card
-      onClick={() => !isRead && onMarkRead && onMarkRead(notification.ID)}
+      onClick={() => !isRead && onMarkRead && onMarkRead(notification.id)}
       sx={{
         cursor: onMarkRead && !isRead ? 'pointer' : 'default',
-        mb: 1.5,
-        borderLeft: `4px solid ${isRead ? '#444' : style.color}`,
-        backgroundColor: isRead ? 'rgba(255,255,255,0.02)' : style.bg,
-        opacity: isRead ? 0.6 : 1,
-        transition: 'all 0.25s ease',
+        mb: 2,
+        borderLeft: `5px solid ${isRead ? '#E8EAED' : style.color}`,
+        background: isRead ? '#F8F9FA' : '#FFFFFF',
+        opacity: isRead ? 0.75 : 1,
+        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+        position: 'relative',
+        overflow: 'hidden',
+        boxShadow: isRead ? 'none' : '0 2px 10px rgba(0,0,0,0.04)',
         '&:hover': {
-          transform: onMarkRead ? 'translateX(4px)' : 'none',
+          transform: onMarkRead ? 'translateY(-2px)' : 'none',
           opacity: 1,
-          boxShadow: `0 2px 12px ${style.color}15`,
-        },
+          boxShadow: onMarkRead ? `0 8px 24px rgba(0,0,0,0.06)` : (isRead ? 'none' : '0 2px 10px rgba(0,0,0,0.04)'),
+        }
       }}
     >
-      <CardContent sx={{ display: 'flex', alignItems: 'center', gap: 2, py: '12px !important', px: { xs: 1.5, sm: 2.5 } }}>
-        {/* Rank badge (for priority inbox) */}
+      <CardContent sx={{ display: 'flex', alignItems: 'center', gap: 2.5, py: '18px !important', px: { xs: 2, sm: 3 } }}>
         {showRank && (
           <Box sx={{
-            minWidth: 32, height: 32, borderRadius: '50%',
+            minWidth: 42, height: 42, borderRadius: '50%',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            border: `2px solid ${rank <= 3 ? ['#ffd700', '#c0c0c0', '#cd7f32'][rank - 1] : '#555'}`,
+            background: rank <= 3
+              ? `linear-gradient(135deg, ${['#F9AB00', '#9AA0A6', '#D97706'][rank - 1]}, ${['#F29900', '#80868B', '#B45309'][rank - 1]})`
+              : '#F1F3F4',
+            color: rank <= 3 ? '#FFF' : '#5F6368',
             flexShrink: 0,
+            boxShadow: rank <= 3 ? `0 4px 10px rgba(0,0,0,0.15)` : 'none',
           }}>
-            <Typography sx={{
-              fontWeight: 700, fontSize: '0.8rem',
-              color: rank <= 3 ? ['#ffd700', '#c0c0c0', '#cd7f32'][rank - 1] : '#888',
-            }}>
+            <Typography sx={{ fontWeight: 800, fontSize: '1.1rem' }}>
               {rank}
             </Typography>
           </Box>
         )}
 
-        {/* Type icon */}
         <Box sx={{
-          width: 36, height: 36, borderRadius: '8px',
+          width: 46, height: 46, borderRadius: '12px',
           display: { xs: 'none', sm: 'flex' }, alignItems: 'center', justifyContent: 'center',
-          backgroundColor: `${style.color}18`, color: style.color, flexShrink: 0,
+          background: style.bg,
+          color: style.color, flexShrink: 0,
         }}>
           {style.icon}
         </Box>
 
-        {/* Content */}
         <Box sx={{ flex: 1, minWidth: 0 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.8, mb: 0.3, flexWrap: 'wrap' }}>
-            <Chip label={notification.Type} size="small" sx={{
-              backgroundColor: `${style.color}20`, color: style.color,
-              fontWeight: 600, fontSize: '0.7rem', height: 20,
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.8, flexWrap: 'wrap' }}>
+            <Chip label={notification.type} size="small" sx={{
+              background: style.bg,
+              color: style.color,
+              fontWeight: 800, fontSize: '0.75rem', height: 24,
+              border: `1px solid ${style.color}30`,
+              letterSpacing: '0.04em',
+              textTransform: 'uppercase'
             }} />
             {!isRead && (
-              <Chip icon={<FiberNew sx={{ fontSize: '13px !important' }} />} label="New" size="small" sx={{
-                backgroundColor: 'rgba(244,67,54,0.12)', color: '#f44336',
-                fontWeight: 600, fontSize: '0.65rem', height: 20,
-                '& .MuiChip-icon': { color: '#f44336' },
+              <Chip icon={<FiberNew sx={{ fontSize: '14px !important' }} />} label="NEW" size="small" sx={{
+                background: '#FCE8E6',
+                color: '#EA4335',
+                fontWeight: 800, fontSize: '0.65rem', height: 22,
+                border: '1px solid #FAD2CF',
+                '& .MuiChip-icon': { color: '#EA4335' },
               }} />
             )}
           </Box>
-          <Typography variant="body2" sx={{
-            fontWeight: isRead ? 400 : 600, color: isRead ? '#999' : '#e0e0e0',
+          <Typography variant="body1" sx={{
+            fontWeight: isRead ? 500 : 700, color: isRead ? '#5F6368' : '#202124',
             overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+            lineHeight: 1.4, letterSpacing: '0.01em',
+            fontSize: '1.05rem'
           }}>
-            {notification.Message}
+            {notification.message}
           </Typography>
         </Box>
 
-        {/* Right side: time + mark read */}
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, flexShrink: 0 }}>
-          <Typography variant="caption" sx={{ color: '#666', display: { xs: 'none', sm: 'block' } }}>
-            {formatTime(notification.Timestamp)}
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, flexShrink: 0 }}>
+          <Typography variant="body2" sx={{
+            color: '#80868B', display: { xs: 'none', sm: 'block' },
+            fontWeight: 600, fontSize: '0.85rem'
+          }}>
+            {formatTime(notification.timestamp)}
           </Typography>
           {onMarkRead && (
             isRead ? (
-              <MarkEmailRead sx={{ color: '#555', fontSize: 18 }} />
+              <MarkEmailRead sx={{ color: '#DADCE0', fontSize: 26 }} />
             ) : (
-              <Tooltip title="Mark as read">
-                <IconButton size="small" onClick={(e) => { e.stopPropagation(); onMarkRead(notification.ID); }}
-                  sx={{ color: style.color, '&:hover': { backgroundColor: `${style.color}15` } }}>
-                  <CheckCircleOutlined sx={{ fontSize: 18 }} />
+              <Tooltip title="Mark as read" arrow placement="top">
+                <IconButton size="small" onClick={(e) => { e.stopPropagation(); onMarkRead(notification.id); }}
+                  sx={{
+                    color: style.color,
+                    background: style.bg,
+                    '&:hover': {
+                      background: style.color,
+                      color: '#FFF',
+                      transform: 'scale(1.1)',
+                    },
+                    transition: 'all 0.2s ease',
+                  }}>
+                  <CheckCircleOutlined sx={{ fontSize: 22 }} />
                 </IconButton>
               </Tooltip>
             )

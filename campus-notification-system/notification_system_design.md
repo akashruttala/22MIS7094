@@ -132,13 +132,14 @@ data: {"id": "abc-123", "type": "Placement", "message": "Google visiting campus"
 
 # Stage 2
 
-## Database Choice: MySQL
+## Database Choice: SQL (H2 for dev, production-ready with any RDBMS)
 
-I went with MySQL because:
-- It's a well-known relational DB and fits well with structured notification data (fixed columns like id, type, message, timestamp, read status)
+I went with an SQL relational database because:
+- Notification data is highly structured (fixed columns like id, type, message, timestamp, read status) — perfect fit for relational tables
 - ACID compliance means we won't lose notifications during concurrent writes
-- Our university infra already runs MySQL, so no extra setup needed
+- For development and the exam demo, we use **H2 in-memory database** (zero setup, embedded in Spring Boot). For production, this schema is compatible with PostgreSQL, MySQL, or any SQL-compliant DB
 - Good indexing support (B-tree, composite indexes) which we'll need for the query patterns in our APIs
+- Spring Data JPA provides database-agnostic repository queries — switching from H2 to PostgreSQL requires only a config change
 
 ## Schema Design
 
